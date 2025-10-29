@@ -7,6 +7,7 @@ import '../../logic/providers/video_providers.dart';
 import '../../logic/services/workout_generator_service.dart';
 import '../widgets/muscle_group_selector.dart';
 import '../widgets/duration_slider.dart';
+import 'async_demo_screen.dart';
 
 class HomeScreen extends ConsumerStatefulWidget {
   const HomeScreen({super.key});
@@ -27,6 +28,20 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
         title: const Text('The Experiment'),
         centerTitle: true,
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.school),
+            tooltip: 'Async Learning',
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const AsyncDemoScreen(),
+                ),
+              );
+            },
+          ),
+        ],
       ),
       body: SafeArea(
         child: Padding(
