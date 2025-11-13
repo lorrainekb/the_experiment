@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "657027431303",
+    "project_id": "the-experiment-workout",
+    "storage_bucket": "the-experiment-workout.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:657027431303:android:2d95356c437eba98acf122",
+        "android_client_info": {
+          "package_name": "com.example.the_experiment"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDP2CDFjEeV6Lriuh_YHwAP05qT8gZSQyE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

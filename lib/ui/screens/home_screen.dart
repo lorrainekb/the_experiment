@@ -3,6 +3,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../data/models/muscle_group.dart';
+import '../../data/models/workout_video.dart';
+import '../../data/repositories/firebase_video_repository.dart';
 import '../../logic/providers/video_providers.dart';
 import '../../logic/services/workout_generator_service.dart';
 import '../widgets/muscle_group_selector.dart';
@@ -29,6 +31,11 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
         centerTitle: true,
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
         actions: [
+          IconButton(
+            icon: const Icon(Icons.cloud_upload),
+            tooltip: 'Seed Firestore',
+            onPressed: _seedFirestore,
+          ),
           IconButton(
             icon: const Icon(Icons.school),
             tooltip: 'Async Learning',
@@ -147,6 +154,69 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text('Error generating workout: $e')),
+        );
+      }
+    }
+  }
+
+  Future<void> _seedFirestore() async {
+    // Show loading
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (context) => const AlertDialog(
+        title: Text('Seeding Firestore...'),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            CircularProgressIndicator(),
+            SizedBox(height: 16),
+            Text('Adding workout videos to cloud...'),
+          ],
+        ),
+      ),
+    );
+
+    try {
+      const testUserId = 'test-user-123';
+      final repository = FirebaseVideoRepository(userId: testUserId);
+
+      // Your 15 videos from LocalVideoRepository
+      final mockVideos = [
+        WorkoutVideo(
+          id: '1',
+          title: 'Bicep Curls',
+          videoUrl: 'assets/videos/bicep_curls.mp4',
+          muscleGroup: MuscleGroup.armsBack,
+          durationSeconds: 180,
+          createdAt: DateTime.now().subtract(const Duration(days: 10)),
+        ),
+        // ... ADD ALL 15 VIDEOS HERE (copy from local_video_repository.dart)
+      ];
+
+      for (final video in mockVideos) {
+        await repository.addVideo(video);
+      }
+
+      if (mounted) Navigator.of(context).pop(); // Close loading
+
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('✅ Added ${mockVideos.length} videos to Firestore!'),
+            backgroundColor: Colors.green,
+          ),
+        );
+      }
+    } catch (e) {
+      if (mounted) Navigator.of(context).pop(); // Close loading
+
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Error: $e'),
+            backgroundColor: Colors.red,
+          ),
         );
       }
     }
