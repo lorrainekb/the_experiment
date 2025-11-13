@@ -3,14 +3,23 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../data/models/workout_video.dart';
 import '../../data/models/muscle_group.dart';
+import '../../data/repositories/firebase_video_repository.dart';
 import '../../data/repositories/video_repository.dart';
 import '../../data/repositories/local_video_repository.dart';
+import 'auth_providers.dart';
 
 /// Provider for the VideoRepository
 /// This is the ONLY place where we specify which implementation to use
 /// Change this one line to switch from local → Instagram API → Firebase
 final videoRepositoryProvider = Provider<VideoRepository>((ref) {
-  return LocalVideoRepository(); // Easy to swap later!
+  final userId = ref.watch(currentUserIdProvider);
+
+  if (userId == null) {
+    // User not logged in - return empty repository
+    return LocalVideoRepository(); // Fallback to local (or could throw error)
+  }
+
+  return FirebaseVideoRepository(userId: userId); // Use real user ID!
 });
 
 /// Provider to get all videos
